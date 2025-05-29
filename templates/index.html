@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot - Υγεία & Ασφάλεια Εργασίας</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e8f5e9, #f1f8e9);
+      color: #2e7d32;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    header h1 {
+      font-size: 22px;
+      color: #1b5e20;
+      margin-bottom: 10px;
+    }
+    .school-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      font-size: 14px;
+      color: #33691e;
+    }
+    .school-info img {
+      height: 60px;
+    }
+    #chatbox {
+      background-color: white;
+      border: 1px solid #c8e6c9;
+      padding: 15px;
+      height: 320px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    input[type="text"] {
+      width: 70%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #a5d6a7;
+      font-size: 14px;
+    }
+    button {
+      padding: 12px 20px;
+      background-color: #66bb6a;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #43a047;
+    }
+    .user, .bot {
+      margin: 6px 0;
+    }
+    .user strong { color: #1e88e5; }
+    .bot strong { color: #43a047; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Chatbot για την Παροχή Απαντήσεων στον Τομέα της Υγείας και Ασφάλειας της Εργασίας</h1>
+    <div class="school-info">
+      Εθνικό Μετσόβιο Πολυτεχνείο<br>
+      Μάθημα: Εργαστήριο Βιοϊατρικής Τεχνολογίας
+    </div>    
+  </header>
+
+  <div id="chatbox"></div>
+  <input type="text" id="message" placeholder="Πληκτρολόγησε την ερώτησή σου εδώ...">
+  <button onclick="sendMessage()">Στείλε</button>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById("message");
+      const msg = input.value.trim();
+      if (msg === "") return;
+
+      const chatbox = document.getElementById("chatbox");
+      chatbox.innerHTML += `<div class="user"><strong>Εγώ:</strong> ${msg}</div>`;
+
+      fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "message=" + encodeURIComponent(msg)
+      })
+      .then(res => res.json())
+      .then(data => {
+        chatbox.innerHTML += `<div class="bot"><strong>Bot:</strong> ${data.response}</div>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+        input.value = "";
+      });
+    }
+  </script>
+</body>
+</html>
